@@ -1,18 +1,10 @@
 import { Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
+import styles from '../ItemCount/ItemCount.module.css';
+
 
 function ItemCount() {
   const [counter, setCounter] = useState(0)
-
-  useEffect(() => {
-    console.log('se disparó el efecto')
-
-    return() =>{
-      console.log('se desmonto')
-    }
-  }, [counter]
-)
-
   const handleAdd = () => setCounter (counter + 1);
   const handleSub = () => {
     if (counter > 0) {
@@ -21,10 +13,7 @@ function ItemCount() {
   };
 
   return (
-    <div 
-      className="d-flex flex-column align-items-center"
-      style={{ width: "100%", maxWidth: "200px", margin: "auto" }}
-    >
+    <div className={`d-flex flex-column align-items-center ${styles['estilo-boton']}`}>
       <p className='text-center border'>{counter}</p>  
       <div className="d-flex justify-content-between w-100">
         <Button size="m" variant="danger" onClick={handleSub}>
