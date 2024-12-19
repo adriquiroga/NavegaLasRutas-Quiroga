@@ -2,7 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
-import Item from './Item';
+import Item from './Item/Item';
 
 
 function ItemList({ items }) {

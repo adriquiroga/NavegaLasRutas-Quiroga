@@ -1,26 +1,43 @@
-import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import ItemDetail from "./ItemDetail/ItemDetail"
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import {app} from "../firebase/config"; 
+import ItemDetail from "./ItemDetail/ItemDetail";
 
-
-
-function ItemDetailContainer (){
-  const[detail, setDetail] = useState(null);
-  const {id} = useParams();
+function ItemDetailContainer() {
+  const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { id } = useParams();
 
   useEffect(() => {
-    fetch(`https://dummyjson.com/products/${id}`)
-        .then(res => res.json())
-        .then(res => setDetail(res))
-  }, [id])
-  
-  if (!detail) {
+    const db = getFirestore(app);
+    const fetchProduct = async () => {
+      try {
+        const productDoc = await getDoc(doc(db, "items", id));
+        if (productDoc.exists()) {
+          setDetail({ id: productDoc.id, ...productDoc.data() });
+        } else {
+          console.error("Producto no encontrado");
+        }
+      } catch (error) {
+        console.error("Error obteniendo producto:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) {
     return <p>Cargando...</p>;
   }
 
-  return (
-    <ItemDetail  detail = {detail} />
-  )
+  if (!detail) {
+    return <p>Producto no encontrado</p>;
+  }
+
+  return <ItemDetail detail={detail} />;
 }
 
-export default ItemDetailContainer
+export default ItemDetailContainer;
